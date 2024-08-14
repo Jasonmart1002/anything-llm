@@ -1,7 +1,7 @@
 import paths from "@/utils/paths";
 import LGroupImg from "./l_group.png";
 import RGroupImg from "./r_group.png";
-import AnythingLLMLogo from "@/media/logo/anything-llm.png";
+import AnythingLLMLogo from "@/media/logo/output-onlinepngtools-2.png";
 import { useNavigate } from "react-router-dom";
 
 export default function OnboardingHome() {

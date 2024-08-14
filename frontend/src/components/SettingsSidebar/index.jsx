@@ -19,7 +19,6 @@ import Footer from "../Footer";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import showToast from "@/utils/toast";
-import System from "@/models/system";
 import Option from "./MenuOption";
 import { FineTuningAlert } from "@/pages/FineTuning/Banner";
 
@@ -110,15 +109,6 @@ export default function SettingsSidebar() {
                     <SidebarOptions user={user} t={t} />
                     <div className="h-[1.5px] bg-[#3D4147] mx-3 mt-[14px]" />
                     <SupportEmail />
-                    <Link
-                      hidden={
-                        user?.hasOwnProperty("role") && user.role !== "admin"
-                      }
-                      to={paths.settings.privacy()}
-                      className="text-darker hover:text-white text-xs leading-[18px] mx-3"
-                    >
-                      {t("settings.privacy")}
-                    </Link>
                   </div>
                 </div>
               </div>
@@ -160,15 +150,6 @@ export default function SettingsSidebar() {
                   <SidebarOptions user={user} t={t} />
                   <div className="h-[1.5px] bg-[#3D4147] mx-3 mt-[14px]" />
                   <SupportEmail />
-                  <Link
-                    hidden={
-                      user?.hasOwnProperty("role") && user.role !== "admin"
-                    }
-                    to={paths.settings.privacy()}
-                    className="text-darker hover:text-white text-xs leading-[18px] mx-3"
-                  >
-                    {t("settings.privacy")}
-                  </Link>
                 </div>
               </div>
             </div>
@@ -184,20 +165,8 @@ export default function SettingsSidebar() {
 }
 
 function SupportEmail() {
-  const [supportEmail, setSupportEmail] = useState(paths.mailToMintplex());
+  const supportEmail = "mailto:info@havenhealthmgmt.org";
   const { t } = useTranslation();
-
-  useEffect(() => {
-    const fetchSupportEmail = async () => {
-      const supportEmail = await System.fetchSupportEmail();
-      setSupportEmail(
-        supportEmail?.email
-          ? `mailto:${supportEmail.email}`
-          : paths.mailToMintplex()
-      );
-    };
-    fetchSupportEmail();
-  }, []);
 
   return (
     <Link
@@ -369,7 +338,6 @@ function HoldToReveal({ children, holdForMs = 3_000 }) {
       if (!["Control", "Meta"].includes(e.key) || timeout !== null) return;
       timeout = setTimeout(() => {
         setShowing(true);
-        // Setting toastId prevents hook spam from holding control too many times or the event not detaching
         showToast("Experimental feature previews unlocked!");
         window.localStorage.setItem(
           "anythingllm_experimental_feature_preview_unlocked",

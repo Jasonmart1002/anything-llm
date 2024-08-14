@@ -1,7 +1,6 @@
 import useLoginMode from "@/hooks/useLoginMode";
 import usePfp from "@/hooks/usePfp";
 import useUser from "@/hooks/useUser";
-import System from "@/models/system";
 import paths from "@/utils/paths";
 import { userFromStorage } from "@/utils/request";
 import { Person } from "@phosphor-icons/react";
@@ -16,7 +15,7 @@ export default function UserButton() {
   const buttonRef = useRef();
   const [showMenu, setShowMenu] = useState(false);
   const [showAccountSettings, setShowAccountSettings] = useState(false);
-  const [supportEmail, setSupportEmail] = useState("");
+  const supportEmail = "mailto:info@havenhealthmgmt.org";
 
   const handleClose = (event) => {
     if (
@@ -39,18 +38,6 @@ export default function UserButton() {
     }
     return () => document.removeEventListener("mousedown", handleClose);
   }, [showMenu]);
-
-  useEffect(() => {
-    const fetchSupportEmail = async () => {
-      const supportEmail = await System.fetchSupportEmail();
-      setSupportEmail(
-        supportEmail?.email
-          ? `mailto:${supportEmail.email}`
-          : paths.mailToMintplex()
-      );
-    };
-    fetchSupportEmail();
-  }, []);
 
   if (mode === null) return null;
   return (

@@ -342,84 +342,64 @@ const System = {
     );
     return { appName: customAppName, error: null };
   },
-  fetchLogo: async function () {
-    return await fetch(`${API_BASE}/system/logo`, {
-      method: "GET",
-      cache: "no-cache",
-    })
-      .then(async (res) => {
-        if (res.ok && res.status !== 204) {
-          const isCustomLogo = res.headers.get("X-Is-Custom-Logo") === "true";
-          const blob = await res.blob();
-          const logoURL = URL.createObjectURL(blob);
-          return { isCustomLogo, logoURL };
-        }
-        throw new Error("Failed to fetch logo!");
-      })
-      .catch((e) => {
-        console.log(e);
-        return { isCustomLogo: false, logoURL: null };
-      });
-  },
-  fetchPfp: async function (id) {
-    return await fetch(`${API_BASE}/system/pfp/${id}`, {
-      method: "GET",
-      cache: "no-cache",
-      headers: baseHeaders(),
-    })
-      .then((res) => {
-        if (res.ok && res.status !== 204) return res.blob();
-        throw new Error("Failed to fetch pfp.");
-      })
-      .then((blob) => (blob ? URL.createObjectURL(blob) : null))
-      .catch((e) => {
-        // console.log(e);
-        return null;
-      });
-  },
-  removePfp: async function (id) {
-    return await fetch(`${API_BASE}/system/remove-pfp`, {
-      method: "DELETE",
-      headers: baseHeaders(),
-    })
-      .then((res) => {
-        if (res.ok) return { success: true, error: null };
-        throw new Error("Failed to remove pfp.");
-      })
-      .catch((e) => {
-        console.log(e);
-        return { success: false, error: e.message };
-      });
-  },
+fetchLogo: async function () {
+  const newLogoPath = '/media/logo/output-onlinepngtools-2.png';
+  try {
+    const response = await fetch(newLogoPath);
+    if (response.ok) {
+      const blob = await response.blob();
+      const logoURL = URL.createObjectURL(blob);
+      return { isCustomLogo: true, logoURL };
+    }
+    throw new Error("Failed to fetch logo!");
+  } catch (e) {
+    console.log(e);
+    return { isCustomLogo: false, logoURL: null };
+  }
+},
 
-  isDefaultLogo: async function () {
-    return await fetch(`${API_BASE}/system/is-default-logo`, {
-      method: "GET",
-      cache: "no-cache",
+fetchPfp: async function (id) {
+  return await fetch(`${API_BASE}/system/pfp/${id}`, {
+    method: "GET",
+    cache: "no-cache",
+    headers: baseHeaders(),
+  })
+    .then((res) => {
+      if (res.ok && res.status !== 204) return res.blob();
+      throw new Error("Failed to fetch pfp.");
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to get is default logo!");
-        return res.json();
-      })
-      .then((res) => res?.isDefaultLogo)
-      .catch((e) => {
-        console.log(e);
-        return null;
-      });
-  },
-  removeCustomLogo: async function () {
-    return await fetch(`${API_BASE}/system/remove-logo`, {
-      headers: baseHeaders(),
+    .then((blob) => (blob ? URL.createObjectURL(blob) : null))
+    .catch((e) => {
+      // console.log(e);
+      return null;
+    });
+},
+
+removePfp: async function (id) {
+  return await fetch(`${API_BASE}/system/remove-pfp`, {
+    method: "DELETE",
+    headers: baseHeaders(),
+  })
+    .then((res) => {
+      if (res.ok) return { success: true, error: null };
+      throw new Error("Failed to remove pfp.");
     })
-      .then((res) => {
-        if (res.ok) return { success: true, error: null };
-        throw new Error("Error removing logo!");
-      })
-      .catch((e) => {
-        console.log(e);
-        return { success: false, error: e.message };
-      });
-  },
+    .catch((e) => {
+      console.log(e);
+      return { success: false, error: e.message };
+    });
+},
+
+isDefaultLogo: async function () {
+  // Since we're now always using the custom logo, this always returns false
+  return false;
+},
+
+removeCustomLogo: async function () {
+  // This function might need to be adjusted based on how you want to handle logo removal
+  console.log("removeCustomLogo called, but custom logo is now default.");
+  return { success: false, error: "Cannot remove custom logo as it is now the default." };
+},
   getWelcomeMessages: async function () {
     return await fetch(`${API_BASE}/system/welcome-messages`, {
       method: "GET",
